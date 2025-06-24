@@ -1,8 +1,4 @@
-Got it! I've updated the README draft to explicitly mention the use of 40+ datasets from various locations and elaborated on **all features** with detailed explanations. Here's the enhanced version for you:
 
----
-
-````markdown
 # SmartCharge AI - EV Charging Demand Forecasting & Smart Station Guidance Dashboard
 
 ---
