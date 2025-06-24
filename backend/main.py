@@ -35,7 +35,7 @@ async def get_forecast(station_id: int):
     """
     Returns forecast data, peak and green hours, sustainability info, and correlation analysis for a given station.
     """
-    file_path = f"forecasts/forecast_station_{station_id}.csv"
+    file_path = f"api/forecasts/forecast_station_{station_id}.csv"
     if not os.path.exists(file_path):
         raise HTTPException(status_code=404, detail="Forecast data not found")
 
