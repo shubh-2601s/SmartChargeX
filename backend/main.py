@@ -10,8 +10,8 @@ app = FastAPI()
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000"],  # update with your frontend origin
-    https://smart-charge-x.vercel.app/
+    allow_origins=["http://localhost:3000",https://smart-charge-x.vercel.app/],  # update with your frontend origin
+    
     allow_methods=["*"],
     allow_headers=["*"],
 )
