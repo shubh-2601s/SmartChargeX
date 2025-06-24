@@ -121,6 +121,7 @@ SmartCharge AI delivers innovation by:
    git clone https://github.com/shubh-2601s/SmartChargeX.git
    cd SmartChargeX
 ```
+
 2. **Setup Backend**
 
    ```bash
