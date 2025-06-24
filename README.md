@@ -163,7 +163,6 @@ This project is licensed under the [MIT License](LICENSE).
 
 Thank you for exploring **SmartCharge AI** — innovating smarter and greener EV charging infrastructure for a sustainable future!
 
-```
 
 ---
 
