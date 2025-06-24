@@ -1,0 +1,494 @@
+/* === ROOT CONTAINER === */
+.dashboard-container {
+  padding: 40px 50px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: linear-gradient(135deg, #edf2ff, #dbe6ff);
+  color: #2d3748;
+  max-width: 1100px;
+  margin: 40px auto 60px;
+  border-radius: 24px; /* Slightly more rounded for softer look */
+  box-shadow: 0 28px 60px rgba(0, 0, 0, 0.1); /* Softer, more diffused shadow */
+  min-height: 100vh;
+  box-sizing: border-box;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* === TITLE & INTRO === */
+h1 {
+  font-size: 3rem;
+  color: #0031a9;
+  font-weight: 900;
+  text-transform: uppercase;
+  text-shadow: 0 3px 8px rgba(0, 49, 169, 0.25); /* Slightly softer */
+  margin-bottom: 12px;
+  letter-spacing: 2px; /* More letter spacing for premium feel */
+}
+
+p {
+  font-size: 1.15rem;
+  color: #4a5568;
+  margin-bottom: 32px;
+  line-height: 1.7; /* Increased line-height for better readability */
+  max-width: 700px; /* Limit width for easier reading */
+}
+
+/* === STATION SELECT === */
+.station-select-container {
+  margin-top: 28px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px; /* Slightly larger gap for breathing space */
+  align-items: center;
+}
+
+.station-label {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: #1a202c;
+  min-width: 130px; /* Make label consistent width for alignment */
+}
+
+.station-select {
+  padding: 14px 20px;
+  font-size: 1.05rem;
+  border-radius: 12px;
+  border: 2px solid #cbd5e1;
+  background-color: #fff;
+  color: #1e2a5a;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: inset 0 2px 4px rgba(0,0,0,0.05); /* subtle inset for depth */
+  min-width: 220px; /* minimum width for easier touch */
+}
+
+.station-select:hover,
+.station-select:focus {
+  border-color: #007bff;
+  background-color: #e6f0ff; /* Softer blue background on hover */
+  box-shadow: 0 0 8px rgba(0, 123, 255, 0.4);
+  outline: none;
+  transform: translateY(-2px); /* subtle lift effect */
+}
+
+/* User location text */
+.user-location-text {
+  font-style: italic;
+  font-size: 0.95rem;
+  color: #718096;
+  margin-left: 10px;
+  user-select: none;
+}
+
+/* === LOADING & ERROR === */
+.loading-text {
+  text-align: center;
+  margin-top: 30px;
+  font-weight: 700;
+  color: #007bff;
+  font-size: 1.4rem;
+  animation: pulse 2s infinite;
+  letter-spacing: 1px;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.6; }
+}
+
+.error-container {
+  margin-top: 30px;
+  background-color: #fff5f5;
+  color: #c53030;
+  border: 1.5px solid #feb2b2;
+  padding: 22px 30px;
+  border-radius: 14px;
+  text-align: center;
+  font-weight: 700;
+  font-size: 1.1rem;
+  user-select: none;
+  box-shadow: 0 2px 10px rgba(197, 62, 62, 0.15);
+}
+
+.error-container button {
+  margin-top: 16px;
+  background-color: #c53030;
+  color: #fff;
+  border: none;
+  padding: 12px 28px;
+  border-radius: 12px;
+  cursor: pointer;
+  font-size: 1.1rem;
+  font-weight: 700;
+  letter-spacing: 0.8px;
+  transition: background 0.3s ease, transform 0.2s ease;
+}
+
+.error-container button:hover {
+  background-color: #9b2c2c;
+  transform: translateY(-3px);
+  box-shadow: 0 4px 15px rgba(155, 44, 44, 0.5);
+}
+
+/* === KPI & TOTAL DEMAND === */
+.total-demand-card {
+  background: linear-gradient(90deg, #0031a9, #3366ff);
+  color: #fff;
+  padding: 34px 40px;
+  border-radius: 28px;
+  margin-top: 44px;
+  box-shadow: 0 20px 50px rgba(0, 49, 169, 0.35);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  cursor: default;
+}
+
+.total-demand-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 28px 60px rgba(0, 49, 169, 0.5);
+}
+
+.total-demand-card h2 {
+  margin-bottom: 14px;
+  font-size: 1.8rem;
+  letter-spacing: 0.8px;
+}
+
+.total-demand-value {
+  font-size: 4rem;
+  font-weight: 900;
+  letter-spacing: 2px;
+  font-family: 'Segoe UI Black', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  user-select: text;
+}
+
+/* === KPI CARDS === */
+.kpi-cards-container {
+  display: flex;
+  gap: 28px;
+  flex-wrap: wrap;
+  margin-top: 36px;
+}
+
+.kpi-card {
+  background: #fff;
+  border-left: 10px solid #007bff;
+  border-radius: 20px;
+  padding: 28px 26px;
+  flex: 1 1 30%;
+  box-shadow: 0 10px 22px rgba(0, 0, 0, 0.07);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  cursor: default;
+}
+
+.kpi-card:hover {
+  transform: translateY(-7px);
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.12);
+}
+
+.kpi-card h4 {
+  font-size: 1.2rem;
+  margin-bottom: 10px;
+  color: #1a202c;
+  letter-spacing: 0.6px;
+}
+
+.kpi-value {
+  font-size: 2.6rem;
+  font-weight: 800;
+  color: #2c5282;
+  user-select: text;
+}
+
+/* === EXPORT BUTTON === */
+.export-button {
+  margin-top: 36px;
+  background: linear-gradient(135deg, #007bff, #0056b3);
+  color: white;
+  font-size: 1.15rem;
+  padding: 16px 36px;
+  border: none;
+  border-radius: 60px;
+  cursor: pointer;
+  font-weight: 700;
+  text-transform: uppercase;
+  box-shadow: 0 8px 28px rgba(0, 123, 255, 0.55);
+  transition: all 0.3s ease;
+  letter-spacing: 1.1px;
+}
+
+.export-button:hover {
+  background: linear-gradient(135deg, #0056b3, #003c91);
+  transform: translateY(-4px);
+  box-shadow: 0 12px 38px rgba(0, 60, 145, 0.7);
+}
+
+/* === CHART CONTAINER === */
+.chart-container {
+  margin-top: 64px;
+  background: #fff;
+  padding: 36px 40px;
+  border-radius: 28px;
+  box-shadow: 0 14px 34px rgba(0, 0, 0, 0.1);
+  user-select: none;
+}
+
+.chart-container h2 {
+  font-size: 1.9rem;
+  color: #2d3748;
+  margin-bottom: 24px;
+  letter-spacing: 0.6px;
+}
+
+/* === INSIGHTS SECTION === */
+.insights-container {
+  margin-top: 56px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 28px;
+}
+
+.insight-box {
+  flex: 1 1 48%;
+  background: #fff;
+  border-left: 8px solid #4a5568;
+  padding: 28px 26px;
+  border-radius: 20px;
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.07);
+  user-select: none;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.insight-box:hover {
+  border-color: #2c5282;
+  box-shadow: 0 14px 40px rgba(44, 82, 130, 0.15);
+}
+
+.insight-box h4 {
+  font-size: 1.4rem;
+  margin-bottom: 16px;
+  color: #1a202c;
+  letter-spacing: 0.5px;
+}
+
+.insight-box ul {
+  padding-left: 28px;
+  list-style-type: disc;
+  color: #2d3748;
+  line-height: 1.7;
+  font-size: 1.1rem;
+}
+
+/* === INSIGHT BOX VARIANTS === */
+.peak-hours {
+  border-left-color: #ffb300;
+  background: #fffaf0;
+}
+
+.green-hours {
+  border-left-color: #38a169;
+  background: #f0fff4;
+}
+
+/* === SUSTAINABILITY === */
+.sustainability-container {
+  margin-top: 56px;
+  background: #e6ffed;
+  border: 2.5px solid #a0d9b4;
+  padding: 28px 30px;
+  border-radius: 20px;
+  box-shadow: 0 12px 32px rgba(56, 161, 105, 0.2);
+  user-select: none;
+}
+
+.sustainability-card h4,
+.badge-container h4 {
+  font-size: 1.3rem;
+  color: #276749;
+  margin-bottom: 10px;
+  letter-spacing: 0.4px;
+}
+
+.sustainability-card p {
+  font-size: 1.8rem;
+  font-weight: 900;
+  color: #2f855a;
+  letter-spacing: 1px;
+  user-select: text;
+}
+
+.badge-container p {
+  font-size: 1.4rem;
+  background: #c6f6d5;
+  color: #22543d;
+  padding: 14px;
+  border-radius: 12px;
+  text-align: center;
+  font-weight: 700;
+  letter-spacing: 0.6px;
+}
+
+/* === CONGESTION INFO === */
+.congestion-info {
+  margin-top: 56px;
+  background: #fff5e6;
+  border-left: 8px solid #ffa500;
+  padding: 24px 26px;
+  border-radius: 20px;
+  box-shadow: 0 10px 30px rgba(255, 165, 0, 0.18);
+  font-size: 1.1rem;
+  color: #7b341e;
+  user-select: none;
+}
+
+.congestion-info h2 {
+  color: #cc6600;
+  margin-bottom: 14px;
+  letter-spacing: 0.5px;
+}
+
+/* === RESERVATION SECTION === */
+.reservation-container {
+  margin-top: 56px;
+  background: #f0f4ff;
+  border-left: 8px solid #4a90e2;
+  padding: 28px 30px;
+  border-radius: 20px;
+  box-shadow: 0 10px 26px rgba(0, 112, 210, 0.15);
+  user-select: none;
+}
+
+.reservation-container h2 {
+  color: #0031a9;
+  font-size: 1.6rem;
+  margin-bottom: 18px;
+  letter-spacing: 0.6px;
+}
+
+.datetime-input {
+  padding: 14px 18px;
+  font-size: 1.1rem;
+  border: 2.5px solid #cbd5e0;
+  border-radius: 14px;
+  width: 100%;
+  max-width: 320px;
+  margin-bottom: 14px;
+  box-sizing: border-box;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.datetime-input:focus {
+  border-color: #007bff;
+  box-shadow: 0 0 8px rgba(0, 123, 255, 0.4);
+  outline: none;
+}
+
+.reserve-button {
+  margin-top: 12px;
+  background: linear-gradient(90deg, #4a90e2, #0031a9);
+  color: white;
+  font-size: 1.1rem;
+  padding: 14px 28px;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: 700;
+  box-shadow: 0 8px 20px rgba(0, 49, 169, 0.3);
+  transition: all 0.3s ease;
+  letter-spacing: 0.7px;
+}
+
+.reserve-button:hover:not(:disabled) {
+  background: linear-gradient(90deg, #0031a9, #4a90e2);
+  transform: translateY(-3px);
+  box-shadow: 0 12px 30px rgba(0, 49, 169, 0.45);
+}
+
+.reserve-button:disabled {
+  background: #a0aec0;
+  cursor: not-allowed;
+  box-shadow: none;
+  transform: none;
+  color: #f7fafc;
+}
+
+.reservation-message {
+  margin-top: 14px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #2d3748;
+  transition: all 0.3s ease-in-out;
+  opacity: 1;
+  min-height: 36px;
+  user-select: text;
+}
+
+/* Success and error reservation message styles */
+.reservation-message.success {
+  color: #276749;
+  background-color: #c6f6d5;
+  border: 1.5px solid #2f855a;
+  padding: 12px 18px;
+  border-radius: 14px;
+}
+
+.reservation-message.error {
+  color: #c53030;
+  background-color: #fed7d7;
+  border: 1.5px solid #9b2c2c;
+  padding: 12px 18px;
+  border-radius: 14px;
+}
+
+/* Optional smooth fade-out class */
+.reservation-message.hide {
+  opacity: 0;
+  height: 0;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  transition: all 0.3s ease-in-out;
+}
+
+/* === RESPONSIVE === */
+@media (max-width: 900px) {
+  .kpi-cards-container,
+  .insights-container {
+    flex-direction: column;
+  }
+
+  .station-select-container {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+
+@media (max-width: 480px) {
+  .dashboard-container {
+    padding: 24px 20px;
+  }
+
+  h1 {
+    font-size: 2.4rem;
+  }
+
+  p {
+    font-size: 1rem;
+  }
+
+  .total-demand-value {
+    font-size: 3rem;
+  }
+
+  .kpi-value {
+    font-size: 1.8rem;
+  }
+
+  .export-button {
+    font-size: 1rem;
+    padding: 14px 28px;
+  }
+
+  .datetime-input {
+    max-width: 100%;
+  }
+}

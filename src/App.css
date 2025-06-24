@@ -1,0 +1,172 @@
+/* Fullscreen Reset */
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  width: 100%;
+  overflow-x: hidden;
+  font-family: 'Poppins', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: linear-gradient(135deg, #f6d8ff 0%, #f3c6f1 35%, #cfa8ff 70%, #a18cd1 100%);
+  background-size: cover;
+  background-attachment: fixed;
+  color: #2f1f47;
+  scroll-behavior: smooth;
+}
+
+/* Root */
+#root {
+  height: 100%;
+  width: 100%;
+}
+
+/* App Container */
+.app-container {
+  height: 100%;
+  width: 100%;
+  padding: 60px 50px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+
+  backdrop-filter: blur(10px);
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 20px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+
+  animation: fadeInUp 1.2s ease forwards;
+  opacity: 0;
+  transform: translateY(30px);
+
+  transition: all 0.5s ease;
+}
+
+/* App Title */
+.app-title {
+  font-size: 4rem;
+  font-weight: 800;
+  margin-bottom: 50px;
+  text-align: center;
+  letter-spacing: 1.5px;
+  color: #45115d;
+  text-shadow:
+    0 4px 16px rgba(123, 67, 151, 0.4),
+    0 0 30px rgba(238, 174, 202, 0.8);
+  background: linear-gradient(90deg, #45115d, #b44cd2);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+
+  animation: glowPulse 4s ease-in-out infinite alternate;
+}
+
+/* Dark Mode Styling */
+.app-container.dark {
+  background: linear-gradient(135deg, #100419 0%, #2e0b3d 60%, #482b65 100%);
+  color: #e8d9ff;
+  box-shadow: none;
+  backdrop-filter: blur(8px);
+}
+
+.app-container.dark .app-title {
+  color: #e0b3ff;
+  text-shadow:
+    0 5px 16px rgba(221, 180, 255, 0.4),
+    0 0 45px rgba(203, 134, 255, 0.8);
+  -webkit-text-fill-color: initial;
+}
+
+/* Animations */
+@keyframes fadeInUp {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes glowPulse {
+  from {
+    text-shadow:
+      0 3px 8px rgba(123, 67, 151, 0.3),
+      0 0 18px rgba(238, 174, 202, 0.5);
+  }
+  to {
+    text-shadow:
+      0 5px 16px rgba(123, 67, 151, 0.5),
+      0 0 40px rgba(238, 174, 202, 1);
+  }
+}
+
+/* Dark Mode Toggle */
+.dark-mode-toggle {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  background: rgba(255, 255, 255, 0.15);
+  border: 2px solid rgba(255, 255, 255, 0.7);
+  border-radius: 50%;
+  width: 52px;
+  height: 52px;
+  font-size: 1.5rem;
+  color: #fff;
+  cursor: pointer;
+  box-shadow: 0 0 10px rgba(255,255,255,0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(5px);
+  z-index: 1000;
+  transition: all 0.4s ease;
+}
+
+.dark-mode-toggle:hover,
+.dark-mode-toggle:focus {
+  background-color: white;
+  color: #5a0dad;
+  box-shadow: 0 0 22px #c084fc;
+  outline: none;
+}
+
+/* Scrollbar (Optional Premium Touch) */
+::-webkit-scrollbar {
+  width: 10px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(144, 71, 178, 0.6);
+  border-radius: 10px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(144, 71, 178, 0.8);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .app-title {
+    font-size: 3rem;
+    margin-bottom: 40px;
+  }
+
+  .app-container {
+    padding: 40px 20px;
+  }
+}
+
+@media (max-width: 480px) {
+  .app-title {
+    font-size: 2.2rem;
+    margin-bottom: 30px;
+  }
+
+  .app-container {
+    padding: 30px 15px;
+  }
+
+  .dark-mode-toggle {
+    width: 44px;
+    height: 44px;
+    font-size: 1.2rem;
+  }
+}
