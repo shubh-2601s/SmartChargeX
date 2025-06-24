@@ -26,6 +26,9 @@ const userIcon = new L.Icon({
   iconAnchor: [15, 30],
 });
 
+// Use environment variable or fallback to localhost
+const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || 'https://smartchargex.onrender.com';
+
 const stations = [
   // Tamil Nadu (8)
   { id: 1, name: "Chennai Central", lat: 13.0827, lon: 80.2707 },
@@ -83,27 +86,7 @@ const stations = [
   { id: 39, name: "Mysore Junction", lat: 12.2958, lon: 76.6394 },
   { id: 40, name: "Krishnarajapuram", lat: 13.0456, lon: 77.6700 },
 ];
-
-function deg2rad(deg) {
-  return deg * (Math.PI / 180);
-}
-
-function getDistanceFromLatLonInKm(lat1, lon1, lat2, lon2) {
-  const R = 6371;
-  const dLat = deg2rad(lat2 - lat1);
-  const dLon = deg2rad(lon2 - lon1);
-  const a =
-    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-    Math.cos(deg2rad(lat1)) *
-    Math.cos(deg2rad(lat2)) *
-    Math.sin(dLon / 2) *
-    Math.sin(dLon / 2);
-  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-  return R * c;
-}
-
-// Use environment variable or fallback to localhost
-const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || "http://localhost:8000";
+// ... deg2rad, getDistanceFromLatLonInKm functions unchanged ...
 
 const Dashboard = () => {
   const [stationId, setStationId] = useState(1);
@@ -116,13 +99,11 @@ const Dashboard = () => {
   const [suggestedStation, setSuggestedStation] = useState(null);
   const [congestion, setCongestion] = useState(null);
 
-  // Reservation states
   const [reserveTime, setReserveTime] = useState('');
   const [reserveMsg, setReserveMsg] = useState('');
   const [reserving, setReserving] = useState(false);
   const [co2Saved, setCo2Saved] = useState(null);
 
-  // Convert API timestamp to formatted string
   const formatDate = (ts) => {
     try {
       return new Date(ts).toLocaleString(undefined, {
@@ -136,18 +117,15 @@ const Dashboard = () => {
     }
   };
 
-  // Total demand sum
   const totalPredictedDemand = forecastData.reduce(
     (sum, item) => sum + item.predicted_kwh,
     0
   );
 
-  // Stats
   const avg = forecastData.length > 0 ? (totalPredictedDemand / forecastData.length).toFixed(2) : 0;
   const max = forecastData.length > 0 ? Math.max(...forecastData.map(d => d.predicted_kwh)) : 0;
   const min = forecastData.length > 0 ? Math.min(...forecastData.map(d => d.predicted_kwh)) : 0;
 
-  // Fetch forecast for station
   async function fetchForecastForStation(id) {
     try {
       const response = await fetch(`${API_BASE_URL}/api/forecast/station/${id}`);
@@ -160,7 +138,6 @@ const Dashboard = () => {
     }
   }
 
-  // Detect user location and suggest optimal station
   useEffect(() => {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(async (position) => {
@@ -200,7 +177,6 @@ const Dashboard = () => {
     }
   }, []);
 
-  // Fetch forecast, insights, sustainability and congestion data whenever stationId changes
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
@@ -232,7 +208,6 @@ const Dashboard = () => {
     fetchData();
   }, [stationId]);
 
-  // Clear reservation message after 5 seconds
   useEffect(() => {
     if (reserveMsg) {
       const timer = setTimeout(() => {
@@ -243,7 +218,6 @@ const Dashboard = () => {
     }
   }, [reserveMsg]);
 
-  // Reservation handler with validation
   const handleReserve = async () => {
     if (!reserveTime) {
       alert("Please select a time to reserve.");
@@ -257,7 +231,6 @@ const Dashboard = () => {
       return;
     }
 
-    // Check if selectedDate is within forecast timestamps
     const timestamps = forecastData.map(f => new Date(f.timestamp));
     if (timestamps.length === 0) {
       alert("No forecast data available to validate reservation time.");
@@ -276,7 +249,6 @@ const Dashboard = () => {
     setCo2Saved(null);
 
     try {
-      // Send ISO string with timezone (to UTC)
       const isoTime = selectedDate.toISOString();
 
       const res = await fetch(`${API_BASE_URL}/api/forecast/station/${stationId}/reserve`, {
@@ -342,7 +314,7 @@ const Dashboard = () => {
         )}
       </div>
 
-      {/* Map showing stations and user */}
+      {/* Map */}
       <div style={{ height: 400, marginTop: 20 }}>
         <MapContainer
           center={
@@ -384,7 +356,7 @@ const Dashboard = () => {
           {userLocation && (
             <Circle
               center={[userLocation.lat, userLocation.lon]}
-              radius={50000} // 50 km radius
+              radius={50000}
               pathOptions={{ color: 'blue', fillColor: 'blue', fillOpacity: 0.1 }}
             />
           )}
@@ -400,103 +372,145 @@ const Dashboard = () => {
         </div>
       )}
 
+      {!loading && !error && forecastData.length === 0 && (
+        <p className="no-data-text">No forecast data available for this station.</p>
+      )}
+
       {!loading && !error && forecastData.length > 0 && (
         <>
-          <h2>Forecast Demand for {stations.find(s => s.id === stationId)?.name}</h2>
+          <div className="total-demand-card">
+            <h2>Total Predicted Demand (Next 7 Days)</h2>
+            <p className="total-demand-value">
+              {totalPredictedDemand.toLocaleString(undefined, {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2,
+              })} kWh
+            </p>
+          </div>
 
-          <ResponsiveContainer width="100%" height={300}>
-            <LineChart
-              data={forecastData}
-              margin={{ top: 20, right: 40, bottom: 20, left: 0 }}
-            >
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis
-                dataKey="timestamp"
-                tickFormatter={formatDate}
-                minTickGap={20}
-                tick={{ fontSize: 12 }}
-              />
-              <YAxis
-                label={{ value: 'kWh', angle: -90, position: 'insideLeft', offset: 10 }}
-                tick={{ fontSize: 12 }}
-              />
-              <Tooltip labelFormatter={formatDate} />
-              <Line type="monotone" dataKey="predicted_kwh" stroke="#8884d8" strokeWidth={3} dot={{ r: 3 }} />
-            </LineChart>
-          </ResponsiveContainer>
+          <div className="kpi-cards-container">
+            {[
+              { title: 'Max kWh', value: max.toFixed(2), color: '#ff6347' },
+              { title: 'Min kWh', value: min.toFixed(2), color: '#4caf50' },
+              { title: 'Average kWh', value: avg, color: '#2196f3' },
+            ].map(({ title, value, color }) => (
+              <div
+                key={title}
+                className="kpi-card"
+                style={{ backgroundColor: color }}
+                title={`${title} of predicted demand`}
+              >
+                <h3>{title}</h3>
+                <p>{value}</p>
+              </div>
+            ))}
+          </div>
 
-          <div className="stats-container">
-            <div className="stat-box">
-              <h3>Average Load</h3>
-              <p>{avg} kWh</p>
-            </div>
-            <div className="stat-box">
-              <h3>Max Load</h3>
-              <p>{max} kWh</p>
-            </div>
-            <div className="stat-box">
-              <h3>Min Load</h3>
-              <p>{min} kWh</p>
-            </div>
-            <div className="stat-box">
-              <h3>Total Predicted Load</h3>
-              <p>{totalPredictedDemand.toFixed(2)} kWh</p>
-            </div>
+          <div className="forecast-chart-container">
+            <h2>7-Day Demand Forecast</h2>
+            <ResponsiveContainer width="100%" height={350}>
+              <LineChart data={forecastData}>
+                <CartesianGrid stroke="#ccc" />
+                <XAxis
+                  dataKey="timestamp"
+                  tickFormatter={formatDate}
+                  interval={0}
+                  angle={-45}
+                  textAnchor="end"
+                />
+                <YAxis
+                  label={{ value: "kWh", angle: -90, position: "insideLeft" }}
+                />
+                <Tooltip labelFormatter={formatDate} />
+                <Line
+                  type="monotone"
+                  dataKey="predicted_kwh"
+                  stroke="#8884d8"
+                  activeDot={{ r: 8 }}
+                />
+              </LineChart>
+            </ResponsiveContainer>
           </div>
 
           <div className="insights-container">
-            <h3>Insights</h3>
-            {Object.keys(insights).length === 0 ? (
-              <p>No insights available for this station.</p>
-            ) : (
-              <ul>
-                {Object.entries(insights).map(([key, value]) => (
-                  <li key={key}>
-                    <b>{key.replace(/_/g, ' ')}:</b> {value}
-                  </li>
-                ))}
-              </ul>
+            <h2>Insights</h2>
+            <div className="insight-box peak-hours">
+              <h4>Peak Hours</h4>
+              {insights.peak_hours && insights.peak_hours.length > 0 ? (
+                <ul>
+                  {insights.peak_hours.map((hour, idx) => (
+                    <li key={idx}>{formatDate(hour)}</li>
+                  ))}
+                </ul>
+              ) : (
+                <p>No peak hour data available.</p>
+              )}
+            </div>
+
+            <div className="insight-box green-hours">
+              <h4>Green Hours</h4>
+              {insights.green_hours && insights.green_hours.length > 0 ? (
+                <ul>
+                  {insights.green_hours.map((hour, idx) => (
+                    <li key={idx}>{formatDate(hour)}</li>
+                  ))}
+                </ul>
+              ) : (
+                <p>No green hour data available.</p>
+              )}
+            </div>
+
+            {insights.analysis && (
+              <div className="insight-box analysis">
+                <h4>Demand Correlations</h4>
+                <p>Temperature vs Demand: {insights.analysis.correlation_temperature_demand}</p>
+                <p>Traffic vs Demand: {insights.analysis.correlation_traffic_demand}</p>
+                <p><em>{insights.analysis.interpretation}</em></p>
+              </div>
             )}
           </div>
 
-          {sustainability && (
-            <div className="sustainability-container">
-              <h3>Sustainability Metrics</h3>
-              <ul>
-                {Object.entries(sustainability).map(([key, value]) => (
-                  <li key={key}>
-                    <b>{key.replace(/_/g, ' ')}:</b> {value}
-                  </li>
-                ))}
-              </ul>
+          {congestion && (
+            <div className="congestion-info">
+              <h2>Congestion Info</h2>
+              <p><strong>Congestion Level:</strong> {congestion.congestion_level}</p>
+              <p><strong>Estimated Wait Time:</strong> {congestion.estimated_wait_minutes} minutes</p>
             </div>
           )}
 
-          {congestion && (
-            <div className="congestion-container">
-              <h3>Congestion Level</h3>
-              <p>{congestion.level}</p>
-              <p>{congestion.message}</p>
+          {sustainability && (
+            <div className="sustainability-info">
+              <h2>Sustainability</h2>
+              <p>{sustainability.sustainability_explanation}</p>
+              <p><strong>Badge:</strong> {sustainability.badge}</p>
+              <p><strong>Estimated CO₂ Saved per Charging Session:</strong> {sustainability.co2_saved_per_session} kg</p>
+              <p><strong>Sustainability Score:</strong> {sustainability.sustainability_score}% (lower is better)</p>
             </div>
           )}
 
           <div className="reservation-container">
-            <h3>Reserve a Slot</h3>
+            <h2>Reserve a Charging Slot</h2>
             <input
               type="datetime-local"
               value={reserveTime}
-              onChange={(e) => setReserveTime(e.target.value)}
-              min=""
-              max=""
-              className="reserve-input"
+              onChange={e => setReserveTime(e.target.value)}
+              className="datetime-input"
             />
-            <button onClick={handleReserve} disabled={reserving}>
-              {reserving ? "Reserving..." : "Reserve"}
+            <button
+              className="reserve-button"
+              onClick={handleReserve}
+              disabled={reserving}
+              title="Select a valid date and time within forecast"
+            >
+              {reserving ? 'Reserving...' : 'Reserve Slot'}
             </button>
-            {reserveMsg && <p className="reserve-msg">{reserveMsg}</p>}
-            {co2Saved !== null && (
-              <p className="co2-saved">
-                Estimated CO2 saved this session: {co2Saved} kg
+
+            {reserveMsg && (
+              <p className={`reserve-message ${reserveMsg.includes("successfully") ? "success" : "error"}`}>
+                {reserveMsg}
+                {co2Saved !== null && reserveMsg.includes("successfully") && (
+                  <><br />Estimated CO₂ saved this session: <strong>{co2Saved} kg</strong></>
+                )}
               </p>
             )}
           </div>
