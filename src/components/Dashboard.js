@@ -197,7 +197,7 @@ const Dashboard = () => {
         if (!forecastRes.ok) throw new Error('Failed to fetch forecast data');
         const forecastDataJson = await forecastRes.json();
 
-        const congestionRes = await fetch(`${API_BASE}/api/forecast/station/${stationId}/congestion`);
+        const congestionRes = fetch(`https://smartchargex-backend.onrender.com/api/forecast/station/${stationId}/congestion`);
         if (!congestionRes.ok) throw new Error('Failed to fetch congestion data');
         const congestionDataJson = await congestionRes.json();
 
