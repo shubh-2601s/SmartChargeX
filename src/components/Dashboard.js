@@ -1,3 +1,4 @@
+// Dashboard.js
 import React, { useState, useEffect } from 'react';
 import './Dashboard.css';
 
@@ -21,7 +22,7 @@ const stationIcon = new L.Icon({
 });
 
 const userIcon = new L.Icon({
-  iconUrl: 'https://cdn-icons-png.flaticon.com/512/64/64113.png', // user icon (can replace)
+  iconUrl: 'https://cdn-icons-png.flaticon.com/512/64/64113.png',
   iconSize: [30, 30],
   iconAnchor: [15, 30],
 });
@@ -88,13 +89,11 @@ const stations = [
 function deg2rad(deg) {
   return deg * (Math.PI / 180);
 }
-
 function getDistanceFromLatLonInKm(lat1, lon1, lat2, lon2) {
   const R = 6371;
   const dLat = deg2rad(lat2 - lat1);
   const dLon = deg2rad(lon2 - lon1);
-  const a =
-    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+  const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
     Math.cos(deg2rad(lat1)) *
     Math.cos(deg2rad(lat2)) *
     Math.sin(dLon / 2) *
@@ -113,14 +112,13 @@ const Dashboard = () => {
   const [userLocation, setUserLocation] = useState(null);
   const [suggestedStation, setSuggestedStation] = useState(null);
   const [congestion, setCongestion] = useState(null);
-
-  // Reservation states
   const [reserveTime, setReserveTime] = useState('');
   const [reserveMsg, setReserveMsg] = useState('');
   const [reserving, setReserving] = useState(false);
   const [co2Saved, setCo2Saved] = useState(null);
 
-  // Convert API timestamp to formatted string
+  const API_BASE = 'https://smartchargex.onrender.com';
+
   const formatDate = (ts) => {
     try {
       return new Date(ts).toLocaleString(undefined, {
@@ -134,21 +132,14 @@ const Dashboard = () => {
     }
   };
 
-  // Total demand sum
-  const totalPredictedDemand = forecastData.reduce(
-    (sum, item) => sum + item.predicted_kwh,
-    0
-  );
-
-  // Stats
+  const totalPredictedDemand = forecastData.reduce((sum, item) => sum + item.predicted_kwh, 0);
   const avg = forecastData.length > 0 ? (totalPredictedDemand / forecastData.length).toFixed(2) : 0;
   const max = forecastData.length > 0 ? Math.max(...forecastData.map(d => d.predicted_kwh)) : 0;
   const min = forecastData.length > 0 ? Math.min(...forecastData.map(d => d.predicted_kwh)) : 0;
 
-  // Fetch forecast for station
   async function fetchForecastForStation(id) {
     try {
-      const response = await fetch(`http://localhost:8000/api/forecast/station/${id}`);
+      const response = await fetch(`${API_BASE}/api/forecast/station/${id}`);
       if (!response.ok) throw new Error('Network response was not ok');
       const data = await response.json();
       return data;
@@ -158,7 +149,6 @@ const Dashboard = () => {
     }
   }
 
-  // Detect user location and suggest optimal station
   useEffect(() => {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(async (position) => {
@@ -171,7 +161,7 @@ const Dashboard = () => {
           distance: getDistanceFromLatLonInKm(userLat, userLon, station.lat, station.lon)
         }));
 
-        const NEARBY_RADIUS = 50; // km
+        const NEARBY_RADIUS = 50;
         const nearbyStations = stationsWithDist.filter(s => s.distance <= NEARBY_RADIUS);
         const candidates = nearbyStations.length > 0 ? nearbyStations : stationsWithDist;
 
@@ -198,17 +188,16 @@ const Dashboard = () => {
     }
   }, []);
 
-  // Fetch forecast, insights, sustainability and congestion data whenever stationId changes
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
       setError(null);
       try {
-        const forecastRes = await fetch(`http://localhost:8000/api/forecast/station/${stationId}`);
+        const forecastRes = await fetch(`${API_BASE}/api/forecast/station/${stationId}`);
         if (!forecastRes.ok) throw new Error('Failed to fetch forecast data');
         const forecastDataJson = await forecastRes.json();
 
-        const congestionRes = await fetch(`http://localhost:8000/api/forecast/station/${stationId}/congestion`);
+        const congestionRes = await fetch(`${API_BASE}/api/forecast/station/${stationId}/congestion`);
         if (!congestionRes.ok) throw new Error('Failed to fetch congestion data');
         const congestionDataJson = await congestionRes.json();
 
@@ -230,7 +219,6 @@ const Dashboard = () => {
     fetchData();
   }, [stationId]);
 
-  // Clear reservation message after 5 seconds
   useEffect(() => {
     if (reserveMsg) {
       const timer = setTimeout(() => {
@@ -241,7 +229,6 @@ const Dashboard = () => {
     }
   }, [reserveMsg]);
 
-  // Reservation handler with validation
   const handleReserve = async () => {
     if (!reserveTime) {
       alert("Please select a time to reserve.");
@@ -255,7 +242,6 @@ const Dashboard = () => {
       return;
     }
 
-    // Check if selectedDate is within forecast timestamps
     const timestamps = forecastData.map(f => new Date(f.timestamp));
     if (timestamps.length === 0) {
       alert("No forecast data available to validate reservation time.");
@@ -274,10 +260,9 @@ const Dashboard = () => {
     setCo2Saved(null);
 
     try {
-      // Send ISO string with timezone (to UTC)
       const isoTime = selectedDate.toISOString();
 
-      const res = await fetch(`http://localhost:8000/api/forecast/station/${stationId}/reserve`, {
+      const res = await fetch(`${API_BASE}/api/forecast/station/${stationId}/reserve`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ time: isoTime }),
@@ -300,7 +285,7 @@ const Dashboard = () => {
     }
   };
 
-  return (
+   return (
     <div className="dashboard-container">
       <h1>SmartCharge AI Dashboard</h1>
       <p>Welcome to your EV Charging Demand Forecast Dashboard.</p>
