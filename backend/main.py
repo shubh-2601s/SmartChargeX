@@ -10,7 +10,12 @@ app = FastAPI()
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000"],  # update with your frontend origin
+    allow_origins=[
+        "http://localhost:3000",  # for local development
+        "https://smart-charge-x.vercel.app",  # previous domain (if still used)
+        "https://smartchargex.onrender.com",  # alternate frontend
+        "https://smart-charge-erpgnyyzm-shubh-2601s-projects.vercel.app",  # ✅ new Vercel deployment
+    ],
     allow_methods=["*"],
     allow_headers=["*"],
 )
