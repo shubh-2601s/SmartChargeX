@@ -139,7 +139,7 @@ const Dashboard = () => {
 
   async function fetchForecastForStation(id) {
     try {
-      const response = await fetch(`${API_BASE}/api/forecast/station/${id}`);
+      const response = fetch(`https://smartchargex-backend.onrender.com/api/forecast/station/${stationId}`);
       if (!response.ok) throw new Error('Network response was not ok');
       const data = await response.json();
       return data;
@@ -193,7 +193,7 @@ const Dashboard = () => {
       setLoading(true);
       setError(null);
       try {
-        const forecastRes = await fetch(`https://smartchargex-backend.onrender.com/api/forecast/station/${stationId}`)
+        const forecastRes = await fetch(`https://smartchargex-backend.onrender.com/api/forecast/station/${stationId}`);
         if (!forecastRes.ok) throw new Error('Failed to fetch forecast data');
         const forecastDataJson = await forecastRes.json();
 
