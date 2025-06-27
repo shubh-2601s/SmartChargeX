@@ -34,7 +34,7 @@ class ReservationRequest(BaseModel):
             raise ValueError("Time must be in format YYYY-MM-DD HH:MM:SS")
         return v
 
-@app.get("/api/forecast/station/{station_id}")
+@app.get("/")
 async def get_forecast(station_id: int):
     """
     Returns forecast data, peak and green hours, sustainability info, and correlation analysis for a given station.
